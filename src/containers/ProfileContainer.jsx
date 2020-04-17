@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import ObservationForm from '../ProfileComponents/ObservationForm'
+
+import Observation from '../ProfileComponents/Observation'
 
 class ProfileContainer extends Component {
 
     state = {
-        observeClicked: false
+        observeClicked: false,
+        myClicked: false
     }
 
     clickObserve = (e) => {
@@ -13,13 +15,38 @@ class ProfileContainer extends Component {
         })
     }
 
-    renderForm = () => {
-        console.log("observe me")
-        // <ObservationForm/>
+    clickMine = (e) => {
+        this.setState({
+            myClicked: !this.state.myClicked
+        })
+    }
+
+
+
+    renderObservations = () => {
+        let myObs = this.props.user.observations.map((obsPOJO) => {
+            return (
+            <>
+            <div className='observation_container'>
+                <Observation
+                    key={obsPOJO.id}
+                    observation={obsPOJO}
+                    deleteObs={this.props.deleteObs}
+                    updateObs={this.props.updateObs}
+                    renderObsForm={this.props.renderObsForm}
+                    renderMushrooms={this.props.renderMushrooms}
+                    chosen={this.props.chosen}
+                    token={this.props.token}
+                />
+            </div>
+            </>
+            )
+        })
+        return myObs
     }
 
     render() {
-        const {username, avatar, bio} = this.props.user
+        const {username, avatar, bio, observations} = this.props.user
         return (
             <>
             <h1>Profile</h1>
@@ -27,12 +54,14 @@ class ProfileContainer extends Component {
                 <div>avatar: {avatar}</div>
                 <div>username: {username}</div>
                 <div>bio: {bio}</div>
-                <div>observations: {''}</div>
+                <div className='my_observations' onClick={this.clickMine}>observations: </div>
+                {this.state.myClicked ? this.renderObservations() : ''}
             </span>
             <span className='new_observation' onClick={this.clickObserve}>
-                Make a new Observation!
-                <ObservationForm token={this.props.token} addNewObservation={this.props.addNewObservation}/>
-                {this.renderForm() ? this.state.observedClicked : 'Make a new observation'}
+                {this.state.observeClicked ? 'Hide Form' : 'Make a New Observation!'}
+            </span>
+            <span>
+                {this.state.observeClicked && !this.state.myClicked ? this.props.renderObsForm() : ''}
             </span>
             </>
         )

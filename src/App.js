@@ -3,8 +3,11 @@ import './App.css';
 import {Switch, Route, withRouter, Redirect} from 'react-router-dom'
 
 import NavBar from './components/NavBar'
+import Search from './components/Search'
 import Form from './components/Form'
+import ObservationForm from './ProfileComponents/ObservationForm'
 import ProfileContainer from './containers/ProfileContainer'
+import MushroomContainer from './containers/MushroomContainer'
 
 class App extends React.Component {
 
@@ -16,7 +19,11 @@ class App extends React.Component {
       observations: []
     },
     token: "",
-    mushrooms: []
+    mushrooms: [],
+    observation_list: [],
+    searchTerm: '',
+    searchTags: [],
+    chosen: ''
   }
 
   componentDidMount(){
@@ -36,6 +43,14 @@ class App extends React.Component {
       .then(mushrooms => {
         this.setState({
           mushrooms: mushrooms
+        })
+      })
+
+    fetch("http://localhost:3000/observations")
+      .then(r => r.json())
+      .then(observations => {
+        this.setState({
+          observation_list: observations
         })
       })
   }
@@ -96,6 +111,56 @@ class App extends React.Component {
 
   }
 
+  deleteObs = (badObs) => {
+    let newList = this.state.user.observations.filter(o => {
+      return o.id !== badObs.id
+    })
+
+    this.setState({
+      user: {
+        ...this.state.user,
+        observations: newList
+      }
+    })
+
+    fetch(`http://localhost:3000/observations/${badObs.id}`, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json', "Authorization": `bearer ${localStorage.token}`}
+    })
+  }
+
+  updateObs = (obs) => {
+    console.log(obs)
+    fetch(`http://localhost:3000/observations/${obs.id}`, {
+      method: 'PATCH',
+      headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      'Authorization': `Bearer ${this.state.token}`
+      },
+      body: JSON.stringify(obs)
+  })
+  .then(resp => resp.json())
+  .then(observation => this.updateObservation(observation))
+  }
+
+  handleSearchChange = e => {
+    this.setState({ searchTerm: e.target.value })
+  }
+
+  addSearchTags = (tag) => {
+    this.setState({ searchTags: [...this.state.searchTags, tag] })
+  }
+
+  removeSearchTags = (tag) => {
+    let newList = this.state.searchTags.filter(t => {
+      return t !== tag
+    })
+    this.setState({
+      searchTags: newList
+    })
+  }
+
   renderForm = (routerProps) => {
     if(routerProps.location.pathname === "/login"){
       return <Form formName="Login Form" handleSubmit={this.handleLoginSubmit}/>
@@ -112,11 +177,58 @@ class App extends React.Component {
         user={this.state.user}
         token={this.state.token}
         addNewObservation={this.addNewObservation}
+        renderObsForm={this.renderObsForm}
+        renderMushrooms={this.renderMushrooms}
+        chosen={this.state.chosen}
+        deleteObs={this.deleteObs}
+        updateObs={this.updateObs}
       />
     } else {
       return <Redirect to="/login"/>
     }
   }
+
+  renderObsForm = () => {
+    return (
+        <>
+        <ObservationForm chosen={this.state.chosen} token={this.state.token} addNewObservation={this.addNewObservation}/>
+        {this.renderMushrooms()}
+        </>
+    )
+}
+
+  renderMushrooms = (routerProps) => {
+    const desiredMushrooms = this.state.mushrooms.filter(m =>
+      `${m.phylum} ${m.classis} ${m.order} ${m.family} ${m.genus} ${m.species} ${m.keywords}`.toLowerCase().includes(this.state.searchTerm.toLowerCase())
+    )
+    let core = ``
+    this.state.searchTags.forEach(t => {
+      core = `${core}(?=.*${t})`
+    })
+    let re = new RegExp(`${core}.+`, "g")
+    const taggedMushrooms = desiredMushrooms.filter(m => {
+      return !!re.test(m.keywords)
+      })
+    return (
+      <>
+      <Search searchTags={this.state.searchTags} onChange={this.handleSearchChange} addSearchTags={this.addSearchTags} removeSearchTags={this.removeSearchTags}/>
+      <MushroomContainer
+        mushrooms={taggedMushrooms}
+        chooseMush={this.chooseMush}
+        chosen={this.state.chosen}
+        // user={this.state.user}
+        // token={this.state.token}
+        // addNewObservation={this.addNewObservation}
+      />
+      </>
+    )
+  }
+
+  chooseMush = (mushPOJO) => {
+    this.setState({
+        chosen: mushPOJO
+    })
+}
 
   addNewObservation = (newlyCreatedObservation) => {
     let copy = [...this.state.user.observations, newlyCreatedObservation]
@@ -129,12 +241,35 @@ class App extends React.Component {
     })
   }
 
+  updateObservation = (upObs) => {
+    console.log(upObs)
+
+    // let newList = this.state.user.observations.filter(o => {
+    //   return o.id !== upObs.id
+    // })
+  
+    // this.setState({
+    //   user: {
+    //     ...this.state.user,
+    //     observations: newList
+    //   }
+    // })
+    // let copy = [...this.state.user.observations, upObs]
+
+    // this.setState({
+    //   user: {
+    //     ...this.state.user,
+    //     observations: copy
+    //   }
+    // })
+  }
+
   render(){
     return (
       <div className="App">
-        <NavBar/>
-        {this.state.token && <button onClick={this.handleLogout}>Log out</button>}
+        <NavBar token={this.state.token} handleLogout={this.handleLogout}/>
         <Switch>
+          <Route path="/mushrooms" render={ this.renderMushrooms } />
           <Route path="/login" render={ this.renderForm } />
           <Route path="/register" render={ this.renderForm }/>
           <Route path="/profile" render={ this.renderProfile } />

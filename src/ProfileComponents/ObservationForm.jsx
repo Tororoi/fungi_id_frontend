@@ -39,6 +39,7 @@ class ObservationForm extends React.Component {
           <h3>Add an Observation!</h3>
           <Form onSubmit={handleSubmit}>
             <Form.Group widths="equal">
+              
                 <Form.Input
                 fluid
                 label="Location"
@@ -47,6 +48,7 @@ class ObservationForm extends React.Component {
                 value={location}
                 onChange={handleChange}
                 />
+                <div className="user-images">
                 <Form.Input
                 fluid
                 label="Image One"
@@ -95,10 +97,11 @@ class ObservationForm extends React.Component {
                 value={image_six}
                 onChange={handleChange}
                 />
+                </div>
                 <Form.Input
                 fluid
                 label="Mushroom"
-                placeholder="Mushroom"
+                placeholder={this.props.chosen.id}
                 name="mushroom_id"
                 value={mushroom_id}
                 onChange={handleChange}
