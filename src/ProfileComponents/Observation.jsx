@@ -5,7 +5,7 @@ class Observation extends React.Component {
 
     state = {
         edit: false,
-        newMush: this.props.observation.mushroom
+        newMush: this.props.observation.binomial
     }
 
     handleDelete = () => {
@@ -38,7 +38,7 @@ class Observation extends React.Component {
             <Form.Group widths="equal">
             <Form.Input
             fluid
-            label="Mushroom"
+            label="Change Mushroom"
             placeholder={this.props.chosen.id}
             name="mushroom_id"
             value={this.props.chosen.id}
@@ -50,16 +50,18 @@ class Observation extends React.Component {
     }
 
     render() {
-        let {mushroom, location, image_one, image_two, image_three, image_four, image_five, image_six} = this.props.observation
+        let {binomial, mushroom, location, image_one, image_two, image_three, image_four, image_five, image_six} = this.props.observation
+        console.log(this.state.edit)
         return (
             <>
             <h3 className="ex" onClick={this.handleDelete}>X</h3>
             <span className="observation_card">
                 <img src={image_one}></img>
-                <p>{this.state.newMush}</p>
+                <p style={{fontStyle: 'italic',}}>{this.state.newMush}</p>
                 {this.state.edit ? this.updateForm() : null }
+                <p>{mushroom.common_name}</p>
                 <p>{location}</p>
-                <p className='edit' onClick={this.clickEdit}>EDIT</p>
+                <h5 className='edit' onClick={this.clickEdit}>EDIT</h5>
             </span>
             <span>
                 {this.state.edit ? this.props.renderMushrooms() : ''}

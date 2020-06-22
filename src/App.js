@@ -207,7 +207,7 @@ class App extends React.Component {
     })
     let re = new RegExp(`${core}.+`, "g")
     const taggedMushrooms = desiredMushrooms.filter(m => {
-      return !!re.test(m.keywords)
+      return re.test(m.keywords)
       })
     return (
       <>
@@ -231,8 +231,7 @@ class App extends React.Component {
 }
 
   addNewObservation = (newlyCreatedObservation) => {
-    let copy = [...this.state.user.observations, newlyCreatedObservation]
-
+    let copy = [...this.state.user.observations, newlyCreatedObservation.observation]
     this.setState({
       user: {
         ...this.state.user,
@@ -265,6 +264,7 @@ class App extends React.Component {
   }
 
   render(){
+    console.log(this.state.searchTags)
     return (
       <div className="App">
         <NavBar token={this.state.token} handleLogout={this.handleLogout}/>

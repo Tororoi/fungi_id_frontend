@@ -27,7 +27,7 @@ class ProfileContainer extends Component {
         let myObs = this.props.user.observations.map((obsPOJO) => {
             return (
             <>
-            <div className='observation_container'>
+            
                 <Observation
                     key={obsPOJO.id}
                     observation={obsPOJO}
@@ -38,7 +38,6 @@ class ProfileContainer extends Component {
                     chosen={this.props.chosen}
                     token={this.props.token}
                 />
-            </div>
             </>
             )
         })
@@ -54,8 +53,10 @@ class ProfileContainer extends Component {
                 <div>avatar: {avatar}</div>
                 <div>username: {username}</div>
                 <div>bio: {bio}</div>
-                <div className='my_observations' onClick={this.clickMine}>observations: </div>
+                <span className='my_observations' onClick={this.clickMine}>observations: </span>
+                <div className='observation_container'>
                 {this.state.myClicked ? this.renderObservations() : ''}
+                </div>
             </span>
             <span className='new_observation' onClick={this.clickObserve}>
                 {this.state.observeClicked ? 'Hide Form' : 'Make a New Observation!'}

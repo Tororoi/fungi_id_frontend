@@ -39,7 +39,7 @@ class Mushroom extends React.Component {
               <img src={this.props.mushroom.observations.length > 0 ? this.props.mushroom.observations[0].image_one : null} alt="oh no!" />
             </div>
             <div className="content">
-            <div>{name}</div>
+            <div style={{fontStyle: 'italic',}}>{name}</div>
             </div>
             <div className="extra content">
               <span>
