@@ -105,10 +105,18 @@ class ObservationForm extends React.Component {
                 name="mushroom_id"
                 value={mushroom_id}
                 onChange={handleChange}
+                style={{display: "none"}}
                 />
             </Form.Group>
             <Form.Button>Submit</Form.Button>
           </Form>
+          <div className="observation-card">
+            <div className="card" style={this.props.chosen.observations !== undefined ? {backgroundColor: 'rgb(120, 194, 120)',} : {display: "none"}}>
+                    <div>
+                      <img src={this.props.chosen.observations !== undefined ? this.props.chosen.observations[0].image_one : ""} alt="Chosen Fungi" />
+                    </div>
+            </div>
+          </div>
         </div>
       )
     }

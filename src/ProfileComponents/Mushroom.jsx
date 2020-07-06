@@ -34,7 +34,7 @@ class Mushroom extends React.Component {
       }
       return (
         <>
-          <div className="card" onClick={this.handleClick} style={this.props.chosen === this.props.mushroom ? {backgroundColor: 'rgb(243, 109, 69)',} : {backgroundColor: 'white',}}>
+          <div className="card" onClick={this.handleClick} style={this.props.chosen === this.props.mushroom ? {backgroundColor: 'rgb(243, 109, 69)'} : {}}>
             <div>
               <img src={this.props.mushroom.observations.length > 0 ? this.props.mushroom.observations[0].image_one : null} alt="oh no!" />
             </div>
