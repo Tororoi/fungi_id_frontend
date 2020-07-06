@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .App {
   text-align: center;
 }
@@ -69,24 +74,50 @@
   flex-flow: row wrap;
   justify-content: center;
   border-radius: 5px;
+  height: 14em;
 
   background-color: rgb(214, 244, 255);
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  flex-flow: column wrap;
+}
+
+.title p {
+  margin: 5px;
+}
+
+.color {
+  width: 9em;
 }
 
 .tags ul {
-  width: 100px;
+  margin: 5px;
+  margin-left: 3em;
+  margin-right: 3em;
+  /* width: 8%; */
+  height: 12em;
   list-style-type: none;
   background-color: rgb(214, 244, 255);
   display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+  flex-flow: column wrap;
+  align-items: center;
 }
 
 .tags ul li {
+  font-size: 12px;
   margin: 0px;
-  padding: 0px;
+  padding: 5px;
   border-radius: 5px;
+  width: 5em;
+  height: 1.6em;
+  box-sizing: initial;
   background-color: rgb(64, 174, 218);
+  text-align: center;
+  line-height: 1.6em;
+  box-sizing: content-box;
 }
 
 .tags ul li:hover {
@@ -99,6 +130,15 @@
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  margin: 1em;
+}
+
+.tagList li {
+  margin: 2px;
+}
+
+.search {
+  margin: 1em;
 }
 
 .my_observations {
@@ -207,4 +247,8 @@
   object-fit: cover;
   object-position: 50% 50%;
 
+}
+
+.new_observation {
+  
 }
